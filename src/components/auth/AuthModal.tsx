@@ -14,7 +14,7 @@ import {
   signInWithGithub,
   signInWithGoogle,
   signInWithKakao,
-} from "@/lib/auth";
+} from "@/services/auth";
 
 const AuthModal = ({
   open,
