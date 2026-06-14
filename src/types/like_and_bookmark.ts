@@ -4,6 +4,7 @@
 export type ToggleLikeResult = {
   isLiked: boolean;
   postId: number;
+  error?: string;
 } | null;
 
 /**
@@ -12,6 +13,7 @@ export type ToggleLikeResult = {
 export type ToggleBookmarkResult = {
   isBookmarked: boolean;
   postId: number;
+  error?: string;
 } | null;
 
 /**

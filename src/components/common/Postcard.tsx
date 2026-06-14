@@ -1,3 +1,4 @@
+"use client";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { Avatar } from "../ui/avatar";
 import { Bookmark, ThumbsUp } from "lucide-react";
@@ -6,14 +7,25 @@ import { SKILLS } from "@/constants/skills";
 import SkillLogo from "./SkillLogo";
 import { POSITION } from "@/constants/position";
 import { formatDate } from "@/lib/formatDate";
-
+import { toggleBookmark, toggleLike } from "@/services/like_and_bookmark";
+import { useState } from "react";
+import { useAuthModalStore } from "@/store/authModalStore";
 interface PostcardProps {
-  description: string;
+  postId: number;
+  content: string;
   usernickName: string;
   created_at: number;
 }
 
-const Postcard = ({ description, usernickName, created_at }: PostcardProps) => {
+const Postcard = ({
+  postId,
+  content,
+  usernickName,
+  created_at,
+}: PostcardProps) => {
+  const { openModal } = useAuthModalStore();
+  const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const MAX_VISIBLE_SKILLS = 5;
   const MAX_VISIBLE_POSITION = 2;
 
@@ -22,6 +34,36 @@ const Postcard = ({ description, usernickName, created_at }: PostcardProps) => {
 
   const remainingPositionCount = () =>
     Math.max(POSITION.length - MAX_VISIBLE_POSITION, 0);
+
+  const handleLToggleike = async (postId: number) => {
+    const result = await toggleLike(postId);
+    if (result === null) {
+      openModal();
+      return;
+    }
+
+    if ("error" in result && result.error === "not authenticated") {
+      openModal();
+      return;
+    }
+
+    setIsLiked(result.isLiked);
+  };
+
+  const handleToggleBookmark = async (postId: number) => {
+    const result = await toggleBookmark(postId);
+    if (result === null) {
+      openModal();
+      return;
+    }
+
+    if ("error" in result && result.error === "not authenticated") {
+      openModal();
+      return;
+    }
+
+    setIsBookmarked(result.isBookmarked);
+  };
 
   return (
     <div className="w-full max-w-[258px] h-[295px] p-6 border rounded-lg bg-white input-shadow duration-300 cursor-pointer card-shadow">
@@ -40,16 +82,28 @@ const Postcard = ({ description, usernickName, created_at }: PostcardProps) => {
         </span>
         <span className="flex items-center gap-[6px]">
           <span>
-            <ThumbsUp size={24} className="text-gray-50" />
+            <ThumbsUp
+              onClick={() => handleLToggleike(postId)}
+              size={24}
+              className={
+                isLiked ? "text-blue-500 fill-current" : "text-gray-50"
+              }
+            />
           </span>
           <span>
-            <Bookmark size={24} className="text-gray-50" />
+            <Bookmark
+              onClick={() => handleToggleBookmark(postId)}
+              size={24}
+              className={
+                isBookmarked ? "text-blue-500 fill-current" : "text-gray-50"
+              }
+            />
           </span>
         </span>
       </div>
       <div>
         <div className="mb-4">
-          <p className="body-large-r line-clamp-3">{description}</p>
+          <p className="body-large-r line-clamp-3">{content}</p>
         </div>
         <div className="mb-[10px]">
           <ul className="flex items-center gap-1 mb-[13px]">
