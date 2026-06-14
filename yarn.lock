@@ -1625,6 +1625,46 @@
   dependencies:
     tslib "2.8.1"
 
+"@supabase/cli-darwin-arm64@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-darwin-arm64/-/cli-darwin-arm64-2.106.0.tgz#da6c31125c530373a978142697a66f7c56b4e2b8"
+  integrity sha512-xi/IAjjbebh6xA9Nkkb7ZwC5ACKJ38OqMoYk1y20ScW5Wt+pxTCcOcaWDWu+2u2Pwc3vTYnXhbknVcQt9UcChQ==
+
+"@supabase/cli-darwin-x64@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-darwin-x64/-/cli-darwin-x64-2.106.0.tgz#95f90eea1139bd9c7637600856c0fb23b8c2608b"
+  integrity sha512-AT2s/8/3Ffb7IkcUXK6sA/iPCzJhh4Fh/XqzAGNGsVd1xCA/ZGniqU8BL03TqPkN1sR0iDaShjMLLIlHEflyPQ==
+
+"@supabase/cli-linux-arm64-musl@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-linux-arm64-musl/-/cli-linux-arm64-musl-2.106.0.tgz#49beb5854b996d9b596cbdfe52408d0549d962a3"
+  integrity sha512-2LExuOHuU6odXorNTvq4M/OvueW+wOs3KDsaCpk+scQMnB6LbmqNidEjXAsKpZu3zyE8MmmtdbJBlRNN/KLdcw==
+
+"@supabase/cli-linux-arm64@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-linux-arm64/-/cli-linux-arm64-2.106.0.tgz#1ca0398e4290e451d1ab195bbcd61e728a42773b"
+  integrity sha512-L/pX7fkV31x7zPrUOcD6KMtZ03j16o41XxgkACFoOAE9lFz8KaJOBSHvn2QLeWEa2kLz7jwpisvpshPSMjuxOw==
+
+"@supabase/cli-linux-x64-musl@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-linux-x64-musl/-/cli-linux-x64-musl-2.106.0.tgz#7b2553bd737456e1b4cc2396370df2c1c82035d3"
+  integrity sha512-wz7heB3wwzmRdLRgqngd2VjPPNIdv6/Y8Q0dX/ZvjcL9/Nk8BYSZ7yjypapLpra+swRnbEJ4jAU6eAShiaB1Hg==
+
+"@supabase/cli-linux-x64@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-linux-x64/-/cli-linux-x64-2.106.0.tgz#de479080d7131ebe3c874ea1833f128cadeafe3e"
+  integrity sha512-+ihtqFNURc8ssULgQoHQBR4AtUmxez9dtqjclqOV0y5r65SX7Ginmiby4XDW9LPlqHT+MB7OyD1vk0T6pQUtPA==
+
+"@supabase/cli-windows-arm64@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-windows-arm64/-/cli-windows-arm64-2.106.0.tgz#7b1a5dd0ab4a9bb098b2b0a58d71bbe76048abdb"
+  integrity sha512-QkEfRDiuuQwcfASo2DIJZ59AFV6xpqhPNo4r0kSVt38StYk3iL7ZcSOkZvGQWLlJ8kXKPBWEMhLnfHQF9r+Xfg==
+
+"@supabase/cli-windows-x64@2.106.0":
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/@supabase/cli-windows-x64/-/cli-windows-x64-2.106.0.tgz#b6508850308496077534e142df9f5a56495a304a"
+  integrity sha512-1tQFbrH1KJhWJqHrY087XPz1WRi20eKG1pebG+6PjSD6XN+j0+x1PTOtBZrylXgY1fOg8BqgU8kl3KX8hI5l9w==
+
 "@supabase/functions-js@2.105.3":
   version "2.105.3"
   resolved "https://registry.yarnpkg.com/@supabase/functions-js/-/functions-js-2.105.3.tgz#5673be3b258bd19c32f919294213b0964b3cfd44"
@@ -6104,6 +6144,20 @@ styled-jsx@5.1.6:
   dependencies:
     client-only "0.0.1"
 
+supabase@>=1.8.1:
+  version "2.106.0"
+  resolved "https://registry.yarnpkg.com/supabase/-/supabase-2.106.0.tgz#c467533cffe10a7cfd19cf55986b17b9a9b3de67"
+  integrity sha512-jV0PJi5LqXUMZ4kriRLvST3DX1YDhrxOgnFJLOn6oUw3KQEFJPXhA60yLQ9aWG1E1uZCp4vUJwSuSGq3HPfaSQ==
+  optionalDependencies:
+    "@supabase/cli-darwin-arm64" "2.106.0"
+    "@supabase/cli-darwin-x64" "2.106.0"
+    "@supabase/cli-linux-arm64" "2.106.0"
+    "@supabase/cli-linux-arm64-musl" "2.106.0"
+    "@supabase/cli-linux-x64" "2.106.0"
+    "@supabase/cli-linux-x64-musl" "2.106.0"
+    "@supabase/cli-windows-arm64" "2.106.0"
+    "@supabase/cli-windows-x64" "2.106.0"
+
 supports-color@^7.1.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-7.2.0.tgz#1b7dcdcb32b8138801b3e478ba6a51caa89648da"
@@ -6621,3 +6675,8 @@ zod@^4.0.14:
   version "4.0.14"
   resolved "https://registry.yarnpkg.com/zod/-/zod-4.0.14.tgz#cc3a0a21981e63e0f99c0f4f1decd92ec3be7e9f"
   integrity sha512-nGFJTnJN6cM2v9kXL+SOBq3AtjQby3Mv5ySGFof5UGRHrRioSJ5iG680cYNjE/yWk671nROcpPj4hAS8nyLhSw==
+
+zustand@^5.0.14:
+  version "5.0.14"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-5.0.14.tgz#18216c24fcb980cf36898f9c57520e67b1f77855"
+  integrity sha512-/8tAspM5LMPr28b3fwLYrtdj77ECpfZviaP75CMTnwO8ISyaE4GDIG/9rDDYq/cH9D2Xw2A2RXglLInmVBQB/g==
