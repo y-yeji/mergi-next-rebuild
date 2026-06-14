@@ -11,28 +11,28 @@ const postList = [
   {
     id: 1,
     usernickName: "파파고",
-    description:
+    content:
       "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
     created_at: 20250813,
   },
   {
     id: 2,
     usernickName: "파파고",
-    description:
+    content:
       "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
     created_at: 20250813,
   },
   {
     id: 3,
     usernickName: "파파고",
-    description:
+    content:
       "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
     created_at: 20250813,
   },
   {
     id: 4,
     usernickName: "파파고",
-    description:
+    content:
       "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
     created_at: 20250813,
   },
@@ -53,8 +53,9 @@ const PostcardSectionList = ({
         {postList.map((item) => (
           <Postcard
             key={item.id}
+            postId={item.id}
             usernickName={item.usernickName}
-            description={item.description}
+            content={item.content}
             created_at={item.created_at}
           />
         ))}
