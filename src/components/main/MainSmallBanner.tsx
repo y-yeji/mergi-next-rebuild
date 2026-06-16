@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface MainSmallBannerProps {
-  linkHerf: string;
+  linkHref: string;
   title: string;
   bannerCaption: string;
   backgroundColor: string;
@@ -18,7 +18,7 @@ interface MainSmallBannerProps {
 }
 
 const MainSmallBanner = ({
-  linkHerf,
+  linkHref,
   title,
   bannerCaption,
   backgroundColor,
@@ -33,7 +33,7 @@ const MainSmallBanner = ({
   bannerHeight,
 }: MainSmallBannerProps) => {
   return (
-    <Link href={linkHerf}>
+    <Link href={linkHref}>
       <div
         className={`relative w-90 h-[205px] p-[30px] ${backgroundColor} rounded-md`}
       >
