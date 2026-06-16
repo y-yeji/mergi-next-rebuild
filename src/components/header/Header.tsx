@@ -50,9 +50,9 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 z-20 w-full h-[80px] py-[21px] px-10 bg-white">
-      <nav className="max-w-[1200px] mx-auto flex items-center justify-between">
+      <nav className="max-w-[1120px] mx-auto flex items-center justify-between">
         <div className="flex flex-1 mr-[250px]">
-          <Link href="/" className="px-[22px] mr-[100px]">
+          <Link href="/" className="mr-[100px]">
             <Image
               src="/images/logo.svg"
               alt="mergi 로고"
