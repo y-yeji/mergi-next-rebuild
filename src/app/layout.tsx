@@ -18,8 +18,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="w-full">
         <Header />
-        {children}
         <AuthModalProvider />
+        {children}
         <Footer />
       </body>
     </html>

@@ -1,14 +1,31 @@
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/client";
 import MainSmallBanner from "@/components/main/MainSmallBanner";
 import Image from "next/image";
 import PostcardSectionList from "@/components/main/PostcardSectionList";
+import { getAllPosts } from "@/services/post";
 
 export default async function Home() {
   const supabase = await createClient();
 
+  const posts = (await getAllPosts({})) ?? [];
+
+  const popularPosts = [...posts].sort(
+    (a, b) => (b.like_count ?? 0) - (a.like_count ?? 0),
+  );
+
+  // 마감일이 가까운 순 (오름차순)
+  const closingSoonPosts = [...posts].sort(
+    (a, b) => new Date(a.end_date).getTime() - new Date(b.end_date).getTime(),
+  );
+
+  // 등록일이 최근인 순 (내림차순)
+  const newPosts = [...posts].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
+
   return (
-    <div className="max-w-[1200px] mx-auto mt-30">
+    <div className="max-w-[1120px] mx-auto mt-30 overflow-hidden">
       <section className="mb-20">
         <div className="mb-5">
           <Image
@@ -20,7 +37,7 @@ export default async function Home() {
         </div>
         <div className="flex flex-wrap gap-5">
           <MainSmallBanner
-            linkHerf="/"
+            linkHref="/study"
             title="스터디 보러가기"
             bannerCaption="모집 중인 스터디를 찾아보세요"
             backgroundColor="bg-secondary-2"
@@ -35,7 +52,7 @@ export default async function Home() {
             bannerHeight={133}
           />
           <MainSmallBanner
-            linkHerf="/"
+            linkHref="/project"
             title="프로젝트 보러가기"
             bannerCaption="모집 중인 프로젝트를 찾아보세요"
             backgroundColor="bg-secondary-1"
@@ -50,7 +67,7 @@ export default async function Home() {
             bannerHeight={133}
           />
           <MainSmallBanner
-            linkHerf="/"
+            linkHref="/service"
             title="서비스 보러가기"
             bannerCaption="홍보 중인 서비스를 찾아보세요"
             backgroundColor="bg-primary-5"
@@ -68,16 +85,19 @@ export default async function Home() {
       </section>
       <section className="mb-20">
         <PostcardSectionList
+          posts={popularPosts}
           title="Hot 인기있는 프로젝트"
           badgeType="success"
           badgeText="인기있는"
         />
         <PostcardSectionList
+          posts={closingSoonPosts}
           title="Now 곧 마감되는 프로젝트"
           badgeType="danger"
           badgeText="마감직전"
         />
         <PostcardSectionList
+          posts={newPosts}
           title="New 새로운 프로젝트"
           badgeType="warning"
           badgeText="새로운"

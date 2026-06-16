@@ -23,6 +23,8 @@ export type PostPaginationResult = {
 export type PostRpcRow = PostEntity & {
   position?: string[];
   techStack?: string[];
+  name?: string;
+  like_count?: number;
 };
 
 /** 게시물 상세 타입 */
