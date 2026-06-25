@@ -1,7 +1,7 @@
 # ✨Mergi - 개발자를 위한 프로젝트 팀원 매칭 사이트
 
 <img src="https://github.com/user-attachments/assets/86c8265c-d6c0-43b8-8a17-d2553886c536" width="100%">
-### [🔗와이어 프레임 & UI 디자인](https://www.figma.com/design/LtJbv7hbxUANy452rpXQFM/%EB%A8%B8%EC%A7%80-%EB%A6%AC%EB%B9%8C%EB%93%9C?node-id=4-3&t=QtsEIgK8s4K0BNLX-1)
+###[🔗와이어 프레임 & UI 디자인](https://www.figma.com/design/LtJbv7hbxUANy452rpXQFM/%EB%A8%B8%EC%A7%80-%EB%A6%AC%EB%B9%8C%EB%93%9C?node-id=4-3&t=QtsEIgK8s4K0BNLX-1)
 
 ## 🤝 Introduce Project - 디자이너, 기획자, 개발자들의 연결고리!
 - Mergi는 프로젝트 팀원을 구하는데 어려움을 겪는 사람들을 위해 만들어진 네트워킹 플랫폼입니다.
