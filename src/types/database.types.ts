@@ -339,7 +339,7 @@ export type Database = {
         };
         Insert: {
           bookmarks?: Json[] | null;
-          created_at: string;
+          created_at?: string;
           id?: number;
           link?: string[] | null;
           long_introduce?: string | null;
