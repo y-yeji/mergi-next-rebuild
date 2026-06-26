@@ -23,19 +23,13 @@ const Footer = () => {
           width={24}
           height={24}
         />
-        mergi-next-migration
+        mergi-next-rebuild
       </Link>
-      <ul className="flex justify-center gap-[10px] mb-2 caption-m text-gray-50">
-        <li>
-          <Link href="https://github.com/y-yeji">y-yeji</Link>
-        </li>
-        <span>|</span>
-        <li>
-          <Link href="https://github.com/Jeon-HyeongJoon">Jeon-HyeongJoon</Link>
-        </li>
-      </ul>
+      <div className="flex justify-center gap-[10px] mb-2 caption-m text-gray-50">
+        <Link href="https://github.com/y-yeji">y-yeji</Link>
+      </div>
       <small className="flex justify-center caption-r text-gray-40">
-        Created with passion by yeji and hyeongjoon | © 2025 yeji and hyeongjoon
+        Created with passion by Yeji | © 2025–2026
       </small>
     </footer>
   );
