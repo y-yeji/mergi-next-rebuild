@@ -1,110 +1,37 @@
 import Postcard from "@/components/common/Postcard";
 import { Button } from "@/components/ui/button";
+import { id } from "date-fns/locale";
 import Link from "next/link";
 
-const postList = [
-  {
-    id: 1,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 2,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 3,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 4,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 5,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 6,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 7,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 8,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 9,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 10,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 11,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 12,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-];
+interface MyPostsTabProps {
+  post: {
+    id: number;
+    content: string;
+    end_date: string;
+    recruit_field: string;
+    post_positions: { position: string }[];
+    post_stacks: { stack: string }[];
+  }[];
+  userNickName: string | undefined;
+}
 
-const MyPostsTab = () => {
-  const hasPost = postList.length > 0;
+const MyPostsTab = ({ post, userNickName }: MyPostsTabProps) => {
+  const hasPost = post.length > 0;
 
   return (
     <div className="pb-10">
       {hasPost ? (
-        <section className="flex justify-between flex-wrap gap-4 py-4">
-          {postList.map((item) => (
-            <Link href="/">
-              <Postcard
-                key={item.id}
-                usernickName={item.usernickName}
-                description={item.description}
-                created_at={item.created_at}
-              />
-            </Link>
+        <section className="flex flex-wrap gap-4 py-4">
+          {post.map((post) => (
+            <Postcard
+              key={post.id}
+              postId={post.id}
+              usernickName={userNickName ?? "알 수 없음"}
+              content={post.content}
+              end_date={post.end_date}
+              techStack={post.post_stacks.map((s) => s.stack)}
+              position={post.recruit_field.split(", ")}
+            />
           ))}
         </section>
       ) : (
