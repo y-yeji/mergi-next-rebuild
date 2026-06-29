@@ -15,7 +15,7 @@ interface PostcardProps {
   content: string;
   usernickName: string;
   end_date: string;
-  tecthStack: string[];
+  techStack: string[];
   position: string[];
 }
 
@@ -24,7 +24,7 @@ const Postcard = ({
   content,
   usernickName,
   end_date,
-  tecthStack,
+  techStack,
   position,
 }: PostcardProps) => {
   const { openModal } = useAuthModalStore();
@@ -34,12 +34,12 @@ const Postcard = ({
   const MAX_VISIBLE_POSITION = 2;
 
   const remainingSkillsCount = () =>
-    Math.max(tecthStack.length - MAX_VISIBLE_SKILLS, 0);
+    Math.max(techStack.length - MAX_VISIBLE_SKILLS, 0);
 
   const remainingPositionCount = () =>
     Math.max(position.length - MAX_VISIBLE_POSITION, 0);
 
-  const handleLToggleike = async (postId: number) => {
+  const handleToggleLike = async (postId: number) => {
     const result = await toggleLike(postId);
     if (result === null) {
       openModal();
@@ -88,7 +88,7 @@ const Postcard = ({
           <span className="flex items-center gap-[6px]">
             <span>
               <ThumbsUp
-                onClick={() => handleLToggleike(postId)}
+                onClick={() => handleToggleLike(postId)}
                 size={24}
                 className={
                   isLiked ? "text-blue-500 fill-current" : "text-gray-50"
@@ -112,7 +112,7 @@ const Postcard = ({
           </div>
           <div className="mb-[10px]">
             <ul className="flex items-center gap-1 mb-[13px]">
-              {tecthStack.slice(0, 5).map((stack) => {
+              {techStack.slice(0, 5).map((stack) => {
                 const matchedSkill = getSkillByStack(stack);
                 if (!matchedSkill) return null;
                 return (
