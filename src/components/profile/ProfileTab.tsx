@@ -5,18 +5,20 @@ import { ChevronDown, LinkIcon } from "lucide-react";
 import SkillBadge from "@/components/common/SkillBadge";
 import { useState } from "react";
 
-const linkList = [
-  "https://github.com/y-yeji/mergi-next-migration",
-  "https://github.com/y-yeji/mergi-next-migration",
-];
+interface ProfileTabProps {
+  long_introduce: string | undefined;
+  link: string[] | undefined;
+  positionWithStacks: {
+    position: string;
+    user_list_stacks: { stacks: string[] }[];
+  }[];
+}
 
-const userSkillMap = {
-  프론트엔드: ["React", "TypeScript", "Next.js"],
-  백엔드: ["Node.js", "Express", "MongoDB"],
-  디자인: ["Figma"],
-};
-
-const ProfileTab = () => {
+const ProfileTab = ({
+  long_introduce,
+  link,
+  positionWithStacks,
+}: ProfileTabProps) => {
   const [isOpenIntroduce, setIsOpenIntroduce] = useState(true);
 
   const handleIntroduceToggle = () => {
@@ -40,42 +42,25 @@ const ProfileTab = () => {
             isOpenIntroduce ? "block" : "hidden"
           }`}
         >
-          안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다
-          :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)안녕하세요. 2년차
-          프론트엔드 개발자입니다 :)안녕하세요. 2년차 프론트엔드 개발자입니다 :)
+          {long_introduce}
         </div>
       </section>
       <section className="mb-11">
         <h3 className="mb-[10px] h3-b text-gray-80">링크</h3>
         <ul>
-          {linkList.map((linkListItem, index) => (
+          {(link ?? []).map((linkItem, index) => (
             <li
-              key={`${linkListItem}-${index}`}
+              key={`${linkItem}-${index}`}
               className="w-full h-8 flex items-center gap-[19px] py-[5.5px] px-[15px] mb-[10px] bg-secondary-3"
             >
               <LinkIcon width={22} height={22} className="text-gray-80" />
               <Link
-                href={linkListItem}
+                href={linkItem}
                 className="body-r text-black"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {linkListItem}
+                {linkItem}
               </Link>
             </li>
           ))}
@@ -84,11 +69,11 @@ const ProfileTab = () => {
       <section>
         <h3 className="mb-[10px] h3-b text-gray-80">포지션 & 스킬</h3>
         <div className="p-7 rounded-lg bg-secondary-3 input-shadow">
-          {Object.entries(userSkillMap).map(([position, skills]) => (
+          {positionWithStacks.map(({ position, user_list_stacks }) => (
             <ul key={position} className="mb-7">
               <h4 className="body-large-m text-gray-80 mb-3">{position}</h4>
               <li className="flex gap-4">
-                {skills.map((skill) => (
+                {(user_list_stacks[0]?.stacks ?? []).map((skill) => (
                   <SkillBadge key={skill} name={skill} skill={skill} />
                 ))}
               </li>

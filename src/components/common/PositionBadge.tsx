@@ -3,12 +3,13 @@ import { Badge } from "../ui/badge";
 
 interface PositionBadgeProps {
   className?: string;
+  positions: string[];
 }
 
-const PositionBadge = ({ className }: PositionBadgeProps) => {
+const PositionBadge = ({ className, positions }: PositionBadgeProps) => {
   return (
     <ul className={className}>
-      {POSITION.slice(0, 3).map((position) => (
+      {positions.map((position) => (
         <li key={position}>
           <Badge variant="position">{position}</Badge>
         </li>
