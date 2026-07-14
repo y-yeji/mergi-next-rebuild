@@ -133,7 +133,7 @@ const Header = () => {
                         "p-0 pb-[10px] justify-center hover:text-primary-3",
                       )}
                     >
-                      <Link href="#">마이페이지</Link>
+                      <Link href="/mypage">마이페이지</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className={cn("p-0 justify-center hover:text-primary-3")}

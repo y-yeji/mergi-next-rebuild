@@ -15,7 +15,7 @@ interface PostcardProps {
   content: string;
   usernickName: string;
   end_date: string;
-  tecthStack: string[];
+  techStack: string[];
   position: string[];
 }
 
@@ -24,7 +24,7 @@ const Postcard = ({
   content,
   usernickName,
   end_date,
-  tecthStack,
+  techStack,
   position,
 }: PostcardProps) => {
   const { openModal } = useAuthModalStore();
@@ -34,12 +34,14 @@ const Postcard = ({
   const MAX_VISIBLE_POSITION = 2;
 
   const remainingSkillsCount = () =>
-    Math.max(tecthStack.length - MAX_VISIBLE_SKILLS, 0);
+    Math.max(techStack.length - MAX_VISIBLE_SKILLS, 0);
 
   const remainingPositionCount = () =>
     Math.max(position.length - MAX_VISIBLE_POSITION, 0);
 
-  const handleLToggleike = async (postId: number) => {
+  const handleToggleLike = async (e: React.MouseEvent, postId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     const result = await toggleLike(postId);
     if (result === null) {
       openModal();
@@ -54,7 +56,9 @@ const Postcard = ({
     setIsLiked(result.isLiked);
   };
 
-  const handleToggleBookmark = async (postId: number) => {
+  const handleToggleBookmark = async (e: React.MouseEvent, postId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     const result = await toggleBookmark(postId);
     if (result === null) {
       openModal();
@@ -71,7 +75,7 @@ const Postcard = ({
 
   return (
     <Link href={`/posts/${postId}`}>
-      <div className="w-full max-w-[258px] h-[295px] p-6 border rounded-lg bg-white input-shadow duration-300 cursor-pointer card-shadow">
+      <div className="w-[258px] h-[295px] p-6 border rounded-lg bg-white input-shadow duration-300 cursor-pointer card-shadow">
         <div className="flex justify-between mb-[15px]">
           <span className="flex items-center gap-[10px]">
             <span>
@@ -88,7 +92,7 @@ const Postcard = ({
           <span className="flex items-center gap-[6px]">
             <span>
               <ThumbsUp
-                onClick={() => handleLToggleike(postId)}
+                onClick={(e) => handleToggleLike(e, postId)}
                 size={24}
                 className={
                   isLiked ? "text-blue-500 fill-current" : "text-gray-50"
@@ -97,7 +101,7 @@ const Postcard = ({
             </span>
             <span>
               <Bookmark
-                onClick={() => handleToggleBookmark(postId)}
+                onClick={(e) => handleToggleBookmark(e, postId)}
                 size={24}
                 className={
                   isBookmarked ? "text-blue-500 fill-current" : "text-gray-50"
@@ -112,7 +116,7 @@ const Postcard = ({
           </div>
           <div className="mb-[10px]">
             <ul className="flex items-center gap-1 mb-[13px]">
-              {tecthStack.slice(0, 5).map((stack) => {
+              {techStack.slice(0, 5).map((stack) => {
                 const matchedSkill = getSkillByStack(stack);
                 if (!matchedSkill) return null;
                 return (

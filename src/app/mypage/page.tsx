@@ -1,94 +1,90 @@
-"use client";
+import { createClient } from "@/lib/supabase/server";
+import MypageView from "./components/MypageView";
+import { redirect } from "next/navigation";
 
-import TabMenu from "@/components/common/TabMenu";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { POSITION } from "@/constants/position";
-import { Settings } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import ProfileTab from "../../components/profile/ProfileTab";
-import MyPostsTab from "./components/MypostsTab";
-import MyApplicationsTab from "./components/MyApplicationsTab";
-import FavoritesTab from "./components/FavoritesTab";
-import PositionBadge from "@/components/common/PositionBadge";
+const Page = async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-const tabMenuItems = [
-  { label: "내 정보", value: "profileTab" },
-  { label: "작성한 모집글", value: "myPostsTab" },
-  { label: "내가 신청한 목록", value: "myapplicationsTab" },
-  { label: "찜 목록", value: "favoritesTab" },
-];
+  if (!user) {
+    redirect("/login");
+  }
 
-const Page = () => {
-  const [selectedTab, setSelectedTab] = useState("profileTab");
+  console.log("user:", user);
+  console.log("user.id:", user.id);
+  const { data: profile, error } = await supabase
+    .from("user_list")
+    .select(
+      `
+    *,
+    user_list_positions (
+      id,
+      position,
+      user_list_stacks (
+        stacks
+      )
+    )
+  `,
+    )
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-  const handleTabMenuClick = (value: string) => {
-    setSelectedTab(value);
-  };
+  const { data: post, error: postError } = await supabase
+    .from("post")
+    .select(
+      `
+    *,
+    post_positions (
+      position
+    ),
+    post_stacks (
+      stack
+    )
+  `,
+    )
+    .eq("author", user.id);
+
+  const { data: bookmarks, error: bookmarkError } = await supabase
+    .from("post_bookmark")
+    .select(
+      `
+    post:post_id (
+      id,
+      content,
+      end_date,
+      recruit_field,
+      author,
+      post_positions ( position ),
+      post_stacks ( stack )
+    )
+  `,
+    )
+    .eq("user_id", user.id);
+
+  const favoritePostRaw = bookmarks?.flatMap((b) => b.post) ?? [];
+
+  const authorIds = [...new Set(favoritePostRaw.map((p) => p.author))];
+  const { data: authors } = authorIds.length
+    ? await supabase
+        .from("user_list")
+        .select("user_id, name")
+        .in("user_id", authorIds)
+    : { data: [] };
+
+  const favoritePost = favoritePostRaw.map((p) => ({
+    ...p,
+    authorName:
+      authors?.find((a) => a.user_id === p.author)?.name ?? "알 수 없음",
+  }));
+
   return (
-    <div className="max-w-[1280px] mx-auto pt-12 pb-20">
-      <section className="w-[928px] h-[220px] mx-auto flex justify-center items-center gap-11 py-12 px-[58px] mb-[52px] rounded-lg bg-white card-shadow">
-        <div className="rounded-full">
-          <Image
-            src="/images/default-user-image.svg"
-            alt="유저프로필이미지"
-            width={124}
-            height={124}
-            className="rounded-full"
-          />
-        </div>
-        <div>
-          <h2 className="h2-b text-black">병알이</h2>
-          <div className="flex justify-between items-center gap-[255px] mb-4">
-            <p className="body-large-r text-gray-40">
-              안녕하세요. 2년차 프론트엔드 개발자입니다 :)
-            </p>
-            <Button className="w-[101px] h-[30px] py-[6px] rounded-sm px-3 caption-r text-white bg-primary-1 cursor-pointer">
-              <Link href="/mypage/edit" className="flex items-center gap-[6px]">
-                <Settings width={13} height={13} className="text-white" />
-                프로필 수정
-              </Link>
-            </Button>
-          </div>
-          <PositionBadge className="flex gap-[15px] mb-[10px]" />
-        </div>
-      </section>
-      <section className="max-w-[1120px] mx-auto rounded-lg bg-white card-shadow">
-        <div className="mb-11">
-          <TabMenu
-            tabMenuListItem={tabMenuItems}
-            selectedTab={selectedTab}
-            onTabClick={handleTabMenuClick}
-          />
-        </div>
-        <div>
-          <div className=" bg-white shadow rounded">
-            {selectedTab === "profileTab" && (
-              <div className="mt-6 p-4 px-10">
-                <ProfileTab />
-              </div>
-            )}
-            {selectedTab === "myPostsTab" && (
-              <div className="mt-6 p-4">
-                <MyPostsTab />
-              </div>
-            )}
-            {selectedTab === "myapplicationsTab" && (
-              <div className="mt-5 px-6 pb-10">
-                <MyApplicationsTab />
-              </div>
-            )}
-            {selectedTab === "favoritesTab" && (
-              <div className="mt-11 pb-10">
-                <FavoritesTab />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-    </div>
+    <MypageView
+      profile={profile}
+      post={post ?? []}
+      favoritePost={favoritePost}
+    />
   );
 };
 

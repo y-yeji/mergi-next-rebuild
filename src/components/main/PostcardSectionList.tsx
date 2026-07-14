@@ -46,7 +46,7 @@ const PostcardSectionList = ({
                 usernickName={post.name ?? "알 수 없음"}
                 content={post.content}
                 end_date={post.end_date}
-                tecthStack={post.techStack ?? []}
+                techStack={post.techStack ?? []}
                 position={post.position ?? []}
               />
             </CarouselItem>
