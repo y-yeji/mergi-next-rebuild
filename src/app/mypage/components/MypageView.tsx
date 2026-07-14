@@ -32,6 +32,17 @@ interface MypageViewProps {
     post_positions: { position: string }[];
     post_stacks: { stack: string }[];
   }[];
+  favoritePost: {
+    id: number;
+    content: string;
+    end_date: string;
+    recruit_field: string;
+    author: string;
+    authorName: string;
+    post_positions: { position: string }[];
+    post_stacks: { stack: string }[];
+    // user_list: { name: string }[];
+  }[];
 }
 const tabMenuItems = [
   { label: "내 정보", value: "profileTab" },
@@ -40,7 +51,7 @@ const tabMenuItems = [
   { label: "찜 목록", value: "favoritesTab" },
 ];
 
-const MypageView = ({ profile, post }: MypageViewProps) => {
+const MypageView = ({ profile, post, favoritePost }: MypageViewProps) => {
   const [selectedTab, setSelectedTab] = useState("profileTab");
 
   const handleTabMenuClick = (value: string) => {
@@ -111,7 +122,7 @@ const MypageView = ({ profile, post }: MypageViewProps) => {
             )}
             {selectedTab === "favoritesTab" && (
               <div className="mt-11 pb-10">
-                <FavoritesTab />
+                <FavoritesTab favoritePost={favoritePost} />
               </div>
             )}
           </div>

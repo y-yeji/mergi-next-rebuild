@@ -46,11 +46,46 @@ const Page = async () => {
     )
     .eq("author", user.id);
 
-  console.log("post:", post);
-  console.log("postError:", postError);
-  console.log("post raw:", JSON.stringify(post, null, 2));
+  const { data: bookmarks, error: bookmarkError } = await supabase
+    .from("post_bookmark")
+    .select(
+      `
+    post:post_id (
+      id,
+      content,
+      end_date,
+      recruit_field,
+      author,
+      post_positions ( position ),
+      post_stacks ( stack )
+    )
+  `,
+    )
+    .eq("user_id", user.id);
 
-  return <MypageView profile={profile} post={post ?? []} />;
+  const favoritePostRaw = bookmarks?.flatMap((b) => b.post) ?? [];
+
+  const authorIds = [...new Set(favoritePostRaw.map((p) => p.author))];
+  const { data: authors } = authorIds.length
+    ? await supabase
+        .from("user_list")
+        .select("user_id, name")
+        .in("user_id", authorIds)
+    : { data: [] };
+
+  const favoritePost = favoritePostRaw.map((p) => ({
+    ...p,
+    authorName:
+      authors?.find((a) => a.user_id === p.author)?.name ?? "알 수 없음",
+  }));
+
+  return (
+    <MypageView
+      profile={profile}
+      post={post ?? []}
+      favoritePost={favoritePost}
+    />
+  );
 };
 
 export default Page;

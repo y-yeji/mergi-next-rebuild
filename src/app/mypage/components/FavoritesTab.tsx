@@ -2,58 +2,37 @@ import Postcard from "@/components/common/Postcard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const postList = [
-  {
-    id: 1,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 2,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 3,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 4,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-  {
-    id: 5,
-    usernickName: "파파고",
-    description:
-      "멋진프로젝트를 만들어봅시다 주제는 파파고 api를 이용한 어쩌고입니다 모집합니다모집합니다모집합니다모집...",
-    created_at: 20250813,
-  },
-];
+interface FavoritesTabProps {
+  favoritePost: {
+    id: number;
+    content: string;
+    end_date: string;
+    recruit_field: string;
+    author: string;
+    authorName: string;
+    post_positions: { position: string }[];
+    post_stacks: { stack: string }[];
+    // user_list: { name: string }[];
+  }[];
+}
 
-const FavoritesTab = () => {
-  const hasFavoritePost = postList.length > 0;
+const FavoritesTab = ({ favoritePost }: FavoritesTabProps) => {
+  const hasFavoritePost = favoritePost.length > 0;
   return (
     <div className="px-4">
       {hasFavoritePost ? (
         <section>
-          <ul className="flex flex-wrap justify-between gap-x-4 gap-y-8">
-            {postList.map((item) => (
-              <li className="mb-8 last:mb-0">
+          <ul className="flex flex-wrap justify-between gap-4 py-4">
+            {favoritePost.map((postItem) => (
+              <li key={postItem.id} className="mb-8 last:mb-0">
                 <Postcard
-                  key={item.id}
-                  usernickName={item.usernickName}
-                  description={item.description}
-                  created_at={item.created_at}
+                  key={postItem.id}
+                  postId={postItem.id}
+                  usernickName={postItem.authorName}
+                  content={postItem.content}
+                  end_date={postItem.end_date}
+                  techStack={postItem.post_stacks.map((s) => s.stack)}
+                  position={postItem.recruit_field.split(", ")}
                 />
               </li>
             ))}
