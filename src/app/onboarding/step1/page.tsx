@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
+import { checkDuplicateNickname } from "@/services/user";
 import { useOnboardingStore } from "@/store/onboardingStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -27,14 +28,9 @@ const Step1 = () => {
       return;
     }
 
-    const supbase = createClient();
-    const { data } = await supbase
-      .from("user_list")
-      .select("id")
-      .eq("name", nickname)
-      .maybeSingle();
+    const isDuplicate = await checkDuplicateNickname(nickname);
 
-    if (data) {
+    if (isDuplicate) {
       setNicknameStatus("duplicate");
     } else {
       setNicknameStatus("valid");
