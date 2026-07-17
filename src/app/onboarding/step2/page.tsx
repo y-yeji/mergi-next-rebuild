@@ -6,6 +6,7 @@ import ProfilePromptModal from "@/components/onboarding/ProfilePromptModal";
 import { Button } from "@/components/ui/button";
 import { POSITION_SKILLS } from "@/constants/position";
 import { createClient } from "@/lib/supabase/client";
+import { postUserInfoOnboard } from "@/services/user";
 import { useOnboardingStore } from "@/store/onboardingStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -44,56 +45,26 @@ const Step2 = () => {
 
     if (!user) return;
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const userPositions = positions.map((pos) => ({
+      position: pos,
+      stacks: selectedSkills.filter((skill) =>
+        POSITION_SKILLS[pos]?.includes(skill),
+      ),
+    }));
 
-    const { data: newUser, error } = await supabase
-      .from("user_list")
-      .insert({
+    const result = await postUserInfoOnboard(
+      {
         user_id: user.id,
         name: nickname,
         short_introduce: introduce,
         created_at: new Date().toISOString(),
-      })
-      .select("id")
-      .single();
+      },
+      userPositions,
+    );
 
-    if (error || !newUser) {
-      console.error("프로필 생성 실패", error?.message);
+    if (!result) {
+      console.error("온보딩 저장 실패");
       return;
-    }
-
-    for (const pos of positions) {
-      const { data: newPos, error: posError } = await supabase
-        .from("user_list_positions")
-        .insert({
-          profile_id: newUser.id,
-          position: pos,
-          created_at: new Date().toISOString(),
-        })
-        .select("id")
-        .single();
-
-      if (posError || !newPos) {
-        console.error(`포지션 저장 실패 (${pos})`, posError?.message);
-        continue;
-      }
-
-      const skillsForPos = selectedSkills.filter((skill) =>
-        POSITION_SKILLS[pos]?.includes(skill),
-      );
-
-      const { error: stackError } = await supabase
-        .from("user_list_stacks")
-        .insert({
-          position_id: newPos.id,
-          stacks: skillsForPos,
-          created_at: new Date().toISOString(),
-        });
-
-      if (stackError)
-        console.error(`스킬 저장 실패 (${pos})`, stackError.message);
     }
 
     setShowProfilePromptModal(true);
