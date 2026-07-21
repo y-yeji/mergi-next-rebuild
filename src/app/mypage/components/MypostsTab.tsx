@@ -1,18 +1,11 @@
 import Postcard from "@/components/common/Postcard";
 import { Button } from "@/components/ui/button";
-import { id } from "date-fns/locale";
+import { PostRpcRow } from "@/types/post";
 import Link from "next/link";
 
 interface MyPostsTabProps {
-  post: {
-    id: number;
-    content: string;
-    end_date: string;
-    recruit_field: string;
-    post_positions: { position: string }[];
-    post_stacks: { stack: string }[];
-  }[];
-  userNickName: string | undefined;
+  post: PostRpcRow[];
+  userNickName: string | null | undefined;
 }
 
 const MyPostsTab = ({ post, userNickName }: MyPostsTabProps) => {
@@ -29,8 +22,8 @@ const MyPostsTab = ({ post, userNickName }: MyPostsTabProps) => {
               usernickName={userNickName ?? "알 수 없음"}
               content={post.content}
               end_date={post.end_date}
-              techStack={post.post_stacks.map((s) => s.stack)}
-              position={post.recruit_field.split(", ")}
+              techStack={post.techStack ?? []}
+              position={post.position ?? []}
             />
           ))}
         </section>

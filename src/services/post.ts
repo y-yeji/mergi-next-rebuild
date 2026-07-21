@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/client";
-import { PostEntity, UserListEntity } from "@/types/type";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { createClient as createBrowserClient } from "@/lib/supabase/client";
 import { getPostComments } from "./comments";
 import {
   PostDetails,
@@ -8,7 +8,8 @@ import {
   PostRpcRow,
 } from "@/types/post";
 
-const supabase = createClient();
+const resolveClient = (client?: SupabaseClient): SupabaseClient =>
+  client ?? createBrowserClient();
 
 /**
  * 전체 게시물 목록 조회
@@ -18,7 +19,10 @@ const supabase = createClient();
 export const getAllPosts = async (
   filters: PostFilters,
   size: number = 10,
+  client?: SupabaseClient,
 ): Promise<PostRpcRow[] | null> => {
+  const supabase = resolveClient(client);
+
   try {
     const { data, error } = await supabase.rpc("get_all_posts", {
       filters,
@@ -47,7 +51,10 @@ export const getAllPostsWithPagination = async (
   filters: PostFilters,
   page: number = 1,
   page_size: number = 12,
+  client?: SupabaseClient,
 ): Promise<PostPaginationResult> => {
+  const supabase = resolveClient(client);
+
   try {
     const { data, error } = await supabase.rpc(
       "get_filtered_posts_with_pagination",
@@ -76,7 +83,10 @@ export const getMyApplyPosts = async (
   filters: PostFilters,
   page: number = 1,
   page_size: number = 4,
+  client?: SupabaseClient,
 ): Promise<PostPaginationResult | null> => {
+  const supabase = resolveClient(client);
+
   try {
     const { data, error } = await supabase.rpc("get_my_apply_posts", {
       filters,
@@ -106,7 +116,10 @@ export const getBookmarkPostsByUser = async (
   filters: PostFilters,
   page: number,
   page_size: number,
+  client?: SupabaseClient,
 ): Promise<PostPaginationResult | null> => {
+  const supabase = resolveClient(client);
+
   const { data, error } = await supabase.rpc(
     "get_user_bookmarks_with_pagination",
     { filters, page, page_size },
@@ -132,7 +145,10 @@ export const getPostsByUser = async (
   filters: PostFilters,
   page: number,
   page_size: number,
+  client?: SupabaseClient,
 ): Promise<PostPaginationResult | null> => {
+  const supabase = resolveClient(client);
+
   const { data, error } = await supabase.rpc(
     "get_post_by_user_with_pagination",
     { filters, page, page_size, user_id },
@@ -153,7 +169,10 @@ export const getPostsByUser = async (
  */
 export const getPostDetails = async (
   postId: number,
+  client?: SupabaseClient,
 ): Promise<PostDetails | null> => {
+  const supabase = resolveClient(client);
+
   try {
     const { data: post, error: postError } = await supabase
       .from("post")
@@ -167,8 +186,8 @@ export const getPostDetails = async (
     }
 
     const [position, techStack, comments] = await Promise.all([
-      getPostPositions(postId),
-      getPostTechStacks(postId),
+      getPostPositions(postId, supabase),
+      getPostTechStacks(postId, supabase),
       getPostComments(postId),
     ]);
 
@@ -194,7 +213,12 @@ export const getPostDetails = async (
  * 특정 게시물의 포지션 목록 조회
  * @param postId - 조회할 게시물 id
  */
-export const getPostPositions = async (postId: number): Promise<string[]> => {
+export const getPostPositions = async (
+  postId: number,
+  client?: SupabaseClient,
+): Promise<string[]> => {
+  const supabase = resolveClient(client);
+
   const { data, error } = await supabase
     .from("post_positions")
     .select("position")
@@ -213,7 +237,12 @@ export const getPostPositions = async (postId: number): Promise<string[]> => {
  * 특정 게시물의 기술스택 목록 조회
  * @param postId - 조회할 게시물 id
  */
-export const getPostTechStacks = async (postId: number): Promise<string[]> => {
+export const getPostTechStacks = async (
+  postId: number,
+  client?: SupabaseClient,
+): Promise<string[]> => {
+  const supabase = resolveClient(client);
+
   const { data, error } = await supabase
     .from("post_stacks")
     .select("stack")

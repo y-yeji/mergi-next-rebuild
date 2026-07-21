@@ -1,19 +1,9 @@
 import Postcard from "@/components/common/Postcard";
 import { Button } from "@/components/ui/button";
+import { PostRpcRow } from "@/types/post";
 import Link from "next/link";
-
 interface FavoritesTabProps {
-  favoritePost: {
-    id: number;
-    content: string;
-    end_date: string;
-    recruit_field: string;
-    author: string;
-    authorName: string;
-    post_positions: { position: string }[];
-    post_stacks: { stack: string }[];
-    // user_list: { name: string }[];
-  }[];
+  favoritePost: (PostRpcRow & { name?: string })[];
 }
 
 const FavoritesTab = ({ favoritePost }: FavoritesTabProps) => {
@@ -22,17 +12,16 @@ const FavoritesTab = ({ favoritePost }: FavoritesTabProps) => {
     <div className="px-4">
       {hasFavoritePost ? (
         <section>
-          <ul className="flex flex-wrap justify-between gap-4 py-4">
-            {favoritePost.map((postItem) => (
-              <li key={postItem.id} className="mb-8 last:mb-0">
+          <ul className="flex flex-wrap gap-4 py-4">
+            {favoritePost.map((post) => (
+              <li key={post.id} className="mb-8 last:mb-0">
                 <Postcard
-                  key={postItem.id}
-                  postId={postItem.id}
-                  usernickName={postItem.authorName}
-                  content={postItem.content}
-                  end_date={postItem.end_date}
-                  techStack={postItem.post_stacks.map((s) => s.stack)}
-                  position={postItem.recruit_field.split(", ")}
+                  postId={post.id}
+                  usernickName={post.name ?? "알 수 없음"}
+                  content={post.content}
+                  end_date={post.end_date}
+                  techStack={post.techStack ?? []}
+                  position={post.position ?? []}
                 />
               </li>
             ))}

@@ -9,8 +9,8 @@ interface ProfileTabProps {
   long_introduce: string | undefined;
   link: string[] | undefined;
   positionWithStacks: {
-    position: string;
-    user_list_stacks: { stacks: string[] }[];
+    position: string | null;
+    stacks: string[];
   }[];
 }
 
@@ -69,11 +69,11 @@ const ProfileTab = ({
       <section>
         <h3 className="mb-[10px] h3-b text-gray-80">포지션 & 스킬</h3>
         <div className="p-7 rounded-lg bg-secondary-3 input-shadow">
-          {positionWithStacks.map(({ position, user_list_stacks }) => (
+          {positionWithStacks.map(({ position, stacks }) => (
             <ul key={position} className="mb-7">
               <h4 className="body-large-m text-gray-80 mb-3">{position}</h4>
               <li className="flex gap-4">
-                {(user_list_stacks[0]?.stacks ?? []).map((skill) => (
+                {(stacks ?? []).map((skill) => (
                   <SkillBadge key={skill} name={skill} skill={skill} />
                 ))}
               </li>

@@ -11,38 +11,13 @@ import MyPostsTab from "./MypostsTab";
 import MyApplicationsTab from "./MyApplicationsTab";
 import FavoritesTab from "./FavoritesTab";
 import { useState } from "react";
+import { UserInfo } from "@/types/user";
+import { PostRpcRow } from "@/types/post";
 
 interface MypageViewProps {
-  profile: {
-    name: string | undefined;
-    short_introduce: string;
-    long_introduce: string | undefined;
-    link: string[] | undefined;
-    user_list_positions: {
-      position: string;
-      user_list_stacks: { stacks: string[] }[];
-    }[];
-  } | null;
-  post: {
-    id: number;
-    content: string;
-    usernickName: string;
-    end_date: string;
-    recruit_field: string;
-    post_positions: { position: string }[];
-    post_stacks: { stack: string }[];
-  }[];
-  favoritePost: {
-    id: number;
-    content: string;
-    end_date: string;
-    recruit_field: string;
-    author: string;
-    authorName: string;
-    post_positions: { position: string }[];
-    post_stacks: { stack: string }[];
-    // user_list: { name: string }[];
-  }[];
+  profile: UserInfo | null;
+  post: PostRpcRow[];
+  favoritePost: (PostRpcRow & { author: string })[];
 }
 const tabMenuItems = [
   { label: "내 정보", value: "profileTab" },
@@ -86,7 +61,9 @@ const MypageView = ({ profile, post, favoritePost }: MypageViewProps) => {
           <PositionBadge
             className="flex gap-[15px] mb-[10px]"
             positions={
-              profile?.user_list_positions?.map((p) => p.position) ?? []
+              profile?.positions
+                ?.map((p) => p.position)
+                .filter((p): p is string => p !== null) ?? []
             }
           />
         </div>
@@ -104,9 +81,9 @@ const MypageView = ({ profile, post, favoritePost }: MypageViewProps) => {
             {selectedTab === "profileTab" && (
               <div className="mt-6 p-4 px-10">
                 <ProfileTab
-                  long_introduce={profile?.long_introduce}
-                  link={profile?.link}
-                  positionWithStacks={profile?.user_list_positions ?? []}
+                  long_introduce={profile?.long_introduce || ""}
+                  link={profile?.link || []}
+                  positionWithStacks={profile?.positions ?? []}
                 />
               </div>
             )}
