@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/client";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { createClient as createBrowserClient } from "@/lib/supabase/client";
 import { getUserLoggedIn } from "./auth";
 import {
   UserListEntity,
@@ -8,9 +9,16 @@ import {
   UserListPositionInsert,
   UserListStackEntity,
 } from "@/types/type";
-import { PositionInput, PositionWithStacks, ProfilePostError, ProfileUpdateError, UserInfo } from "@/types/user";
+import {
+  PositionInput,
+  PositionWithStacks,
+  ProfilePostError,
+  ProfileUpdateError,
+  UserInfo,
+} from "@/types/user";
 
-const supabase = createClient();
+const resolveClient = (client?: SupabaseClient): SupabaseClient =>
+  client ?? createBrowserClient();
 
 /**
  * 온보드 데이터 전송 API
@@ -20,8 +28,11 @@ const supabase = createClient();
 export const postUserInfoOnboard = async (
   userProfile: UserListInsert,
   userPositions: PositionInput[],
+  client?: SupabaseClient,
 ): Promise<UserInfo | undefined> => {
-  const userList = await _postUserProfile(userProfile);
+  const supabase = resolveClient(client);
+
+  const userList = await _postUserProfile(supabase, userProfile);
 
   if (typeof userList === "string") {
     console.error(`온보딩 전송 중단. 에러명: ${userList}`);
@@ -34,6 +45,7 @@ export const postUserInfoOnboard = async (
   await Promise.all(
     userPositions.map(async (positionInput) => {
       const userPosition = await _postUserPositions(
+        supabase,
         {
           position: positionInput.position,
           created_at: new Date().toISOString(),
@@ -43,6 +55,7 @@ export const postUserInfoOnboard = async (
       if (!userPosition) return;
 
       const userStack = await _postUserStacks(
+        supabase,
         {
           stacks: positionInput.stacks,
           created_at: new Date().toISOString(),
@@ -64,6 +77,7 @@ export const postUserInfoOnboard = async (
 
 // 유저 프로필 POST
 const _postUserProfile = async (
+  supabase: SupabaseClient,
   insertObject: UserListInsert,
 ): Promise<UserListEntity | ProfilePostError | null> => {
   const { data, error } = await supabase
@@ -94,6 +108,7 @@ const _postUserProfile = async (
 
 // 유저 포지션 POST
 const _postUserPositions = async (
+  supabase: SupabaseClient,
   insertObject: UserListPositionInsert,
   profile_id: number,
 ): Promise<UserListPositionEntity | null> => {
@@ -113,6 +128,7 @@ const _postUserPositions = async (
 
 // 유저 스택 POST
 const _postUserStacks = async (
+  supabase: SupabaseClient,
   insertObject: { stacks: string[]; created_at: string },
   position_id: number,
 ): Promise<UserListStackEntity | null> => {
@@ -140,14 +156,18 @@ const _postUserStacks = async (
  * 로그인된 유저 정보 조회
  * @returns 유저 프로필 + 포지션/스택 정보
  */
-export const getUserInfo = async (): Promise<UserInfo | null> => {
+export const getUserInfo = async (
+  client?: SupabaseClient,
+): Promise<UserInfo | null> => {
+  const supabase = resolveClient(client);
+
   const authData = await getUserLoggedIn();
   if (!authData?.id) return null;
 
-  const profile = await _getUserProfile(authData.id);
+  const profile = await _getUserProfile(supabase, authData.id);
   if (!profile) return null;
 
-  const rawPositions = await _getUserPositions(profile.id);
+  const rawPositions = await _getUserPositions(supabase, profile.id);
   if (!rawPositions) return null;
 
   const positions = await Promise.all(
@@ -155,7 +175,7 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
       async (pos): Promise<PositionWithStacks> => ({
         id: pos.id,
         position: pos.position,
-        stacks: await _getUserStacks(pos.id),
+        stacks: await _getUserStacks(supabase, pos.id),
       }),
     ),
   );
@@ -166,15 +186,19 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
 /**
  * 특정 유저 정보 조회 (user_id 기반)
  * @param user_id - 조회할 유저의 auth user_id
+ * @param client - 서버 컴포넌트에서 호출 시 "@/lib/supabase/server" 클라이언트를 넘길 것
  * @returns 유저 프로필 + 포지션/스택 정보
  */
 export const getUserInfoToUserId = async (
   user_id: string,
+  client?: SupabaseClient,
 ): Promise<UserInfo | null> => {
-  const profile = await _getUserProfile(user_id);
+  const supabase = resolveClient(client);
+
+  const profile = await _getUserProfile(supabase, user_id);
   if (!profile) return null;
 
-  const rawPositions = await _getUserPositions(profile.id);
+  const rawPositions = await _getUserPositions(supabase, profile.id);
   if (!rawPositions) return null;
 
   const positions = await Promise.all(
@@ -182,7 +206,7 @@ export const getUserInfoToUserId = async (
       async (pos): Promise<PositionWithStacks> => ({
         id: pos.id,
         position: pos.position,
-        stacks: await _getUserStacks(pos.id),
+        stacks: await _getUserStacks(supabase, pos.id),
       }),
     ),
   );
@@ -192,13 +216,14 @@ export const getUserInfoToUserId = async (
 
 // 유저 프로필 GET
 const _getUserProfile = async (
+  supabase: SupabaseClient,
   user_id: string,
 ): Promise<UserListEntity | null> => {
   const { data, error } = await supabase
     .from("user_list")
     .select()
     .eq("user_id", user_id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error(error);
@@ -210,6 +235,7 @@ const _getUserProfile = async (
 
 // 유저 포지션 GET
 const _getUserPositions = async (
+  supabase: SupabaseClient,
   profile_id: number,
 ): Promise<Pick<UserListPositionEntity, "id" | "position">[] | null> => {
   const { data, error } = await supabase
@@ -226,12 +252,15 @@ const _getUserPositions = async (
 };
 
 // 유저 스택 GET
-const _getUserStacks = async (position_id: number): Promise<string[]> => {
+const _getUserStacks = async (
+  supabase: SupabaseClient,
+  position_id: number,
+): Promise<string[]> => {
   const { data, error } = await supabase
     .from("user_list_stacks")
     .select("stacks")
     .eq("position_id", position_id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error(error);
@@ -251,11 +280,18 @@ const _getUserStacks = async (position_id: number): Promise<string[]> => {
 export const putUserInfo = async (
   updatingUserProfile: UserListUpdate,
   updatingUserPositions: PositionInput[],
+  client?: SupabaseClient,
 ): Promise<UserInfo | undefined> => {
+  const supabase = resolveClient(client);
+
   const user = await getUserLoggedIn();
   if (!user?.id) return;
 
-  const userList = await _putUserProfile(updatingUserProfile, user.id);
+  const userList = await _putUserProfile(
+    supabase,
+    updatingUserProfile,
+    user.id,
+  );
 
   // typeof string → 에러 코드이므로 조기 반환
   // 이후 userList는 UserListEntity로 타입 확정
@@ -264,12 +300,13 @@ export const putUserInfo = async (
     return;
   }
 
-  await _deleteUserPositions(userList.id);
+  await _deleteUserPositions(supabase, userList.id);
 
   const positionsArr: PositionWithStacks[] = [];
 
   for (const positionInput of updatingUserPositions) {
     const updatedPosition = await _postUserPositions(
+      supabase,
       {
         position: positionInput.position,
         created_at: new Date().toISOString(),
@@ -279,6 +316,7 @@ export const putUserInfo = async (
     if (!updatedPosition) continue;
 
     const updatedStacks = await _postUserStacks(
+      supabase,
       {
         stacks: positionInput.stacks,
         created_at: new Date().toISOString(),
@@ -299,6 +337,7 @@ export const putUserInfo = async (
 
 // 유저 프로필 PUT
 const _putUserProfile = async (
+  supabase: SupabaseClient,
   updateObject: UserListUpdate,
   user_id: string,
 ): Promise<UserListEntity | ProfileUpdateError> => {
@@ -323,7 +362,10 @@ const _putUserProfile = async (
 };
 
 // 유저 포지션 DELETE
-const _deleteUserPositions = async (profile_id: number): Promise<void> => {
+const _deleteUserPositions = async (
+  supabase: SupabaseClient,
+  profile_id: number,
+): Promise<void> => {
   const { error } = await supabase
     .from("user_list_positions")
     .delete()
@@ -340,7 +382,10 @@ const _deleteUserPositions = async (profile_id: number): Promise<void> => {
  */
 export const checkDuplicateNickname = async (
   nickname: string,
+  client?: SupabaseClient,
 ): Promise<boolean> => {
+  const supabase = resolveClient(client);
+
   const { data, error } = await supabase.rpc("check_username_duplicate", {
     user_name: nickname,
   });
